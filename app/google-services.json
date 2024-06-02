@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "425385075112",
+    "project_id": "health-passbook-8bf8f",
+    "storage_bucket": "health-passbook-8bf8f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:425385075112:android:a97537edb2fc57ae7a7d9d",
+        "android_client_info": {
+          "package_name": "com.example.page3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbKCb_PilBnT3ga815zxqQPijd5eYw9jk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
