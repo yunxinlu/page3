@@ -111,6 +111,15 @@ fun InputForm() {
 
         Row {
             Button(onClick = {
+                val db = Firebase.firestore
+                val data = hashMapOf(
+                    "mealStatus" to mealStatus,
+                    "moodIndex" to moodIndex,
+                    "medicationUsage" to medicationUsage,
+                    "bloodPressure" to bloodPressure,
+                    "bodyTemperature" to bodyTemperature,
+                    "notes" to notes
+                )
                 coroutineScope.launch {
                     saveDataToFirestore(
                         mealStatus.value,
@@ -121,6 +130,7 @@ fun InputForm() {
                         notes.value,
                         msg
                     )
+
                 }
 
             }) {
@@ -129,12 +139,12 @@ fun InputForm() {
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Button(onClick = {
+            /*Button(onClick = {
                 coroutineScope.launch {
                 }
             }) {
                 Text("刪除資料")
-            }
+            }*/
         }
     }
 
@@ -170,11 +180,12 @@ fun saveDataToFirestore(
     db.collection("healthData")
         .add(data)
         .addOnFailureListener { documentReference ->
-            msg.value = "新增資料成功" }
+            msg.value = "新增資料成功"
+        }
         .addOnFailureListener { e ->
             msg.value = "新增資料失敗：" + e.toString()
         }
-
-
-
 }
+
+
+
