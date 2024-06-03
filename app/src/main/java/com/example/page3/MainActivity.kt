@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import androidx.compose.runtime.rememberUpdatedState as rememberUpdatedState
 import kotlinx.coroutines.launch
 
@@ -51,6 +53,7 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         setContent {
             MyApp()
+
         }
     }
 }
@@ -107,9 +110,12 @@ fun InputForm() {
             onValueChange = { notes.value = it },
             label = { Text("備註") }
         )
-        Text(msg.value)
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Row {
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Button(onClick = {
                 val db = Firebase.firestore
                 val data = hashMapOf(
@@ -128,7 +134,8 @@ fun InputForm() {
                         bloodPressure.value,
                         bodyTemperature.value,
                         notes.value,
-                        msg
+                        msg,
+                        snackbarHostState
                     )
 
                 }
@@ -137,7 +144,16 @@ fun InputForm() {
                 Text("新增資料")
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(text = msg.value)
+
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(align = Alignment.BottomCenter)
+            )
 
             /*Button(onClick = {
                 coroutineScope.launch {
@@ -165,7 +181,8 @@ fun saveDataToFirestore(
     bloodPressure: String,
     bodyTemperature: String,
     notes: String,
-    msg: MutableState<String>
+    msg: MutableState<String>,
+    snackbarHostState: SnackbarHostState
 ) {
     val db = Firebase.firestore
     val data = hashMapOf(
@@ -179,12 +196,18 @@ fun saveDataToFirestore(
 
     db.collection("healthData")
         .add(data)
-        .addOnFailureListener { documentReference ->
-            msg.value = "新增資料成功"
+        .addOnSuccessListener { msg.value = "新增資料成功"
+            showSnackbar(snackbarHostState, "新增資料成功")
         }
         .addOnFailureListener { e ->
             msg.value = "新增資料失敗：" + e.toString()
+            showSnackbar(snackbarHostState, "新增資料失敗")
         }
+}
+fun showSnackbar(snackbarHostState: SnackbarHostState, message: String) {
+    CoroutineScope(Dispatchers.Main).launch {
+        snackbarHostState.showSnackbar(message)
+    }
 }
 
 
